@@ -37,9 +37,7 @@ class TestGendersLoad(unittest.TestCase):
 class TestGendersPredicates(unittest.TestCase):
 
     def setUp(self):
-        self.genders = genders.Genders(no_auto=True)
-        self.genders.handle_create()
-        self.genders.load_data("test-data/genders")
+        self.genders = genders.Genders("test-data/genders")
 
     def test_isnode_true(self):
         self.assertTrue(self.genders.isnode("host1"))
@@ -59,6 +57,16 @@ class TestGendersPredicates(unittest.TestCase):
     def test_isattrval_false(self):
         self.assertFalse(self.genders.isattrval("Xos", "rhel5"))
         self.assertFalse(self.genders.isattrval("os", "Xrhel5"))
+
+#class TestGendersGetNums(unittest.TestCase):
+#
+#    def setUp(self):
+#        self.genders = genders.Genders()
+#        self.genders.handle_create()
+#        self.genders.load_data("test-data/genders")
+#
+#    def test_getnumnodes(self):
+#        self.assertEqual(self.genders.getnumnodes(), 1)
 
 if __name__ == '__main__':
     loader = unittest.TestLoader()
