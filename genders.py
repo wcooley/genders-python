@@ -53,12 +53,11 @@ class ErrNumrange(Exception): pass
 errnum_exceptions.append(ErrNumrange)
 
 class Genders(object):
-    def __init__(self, genders_file=None):
-        pass
-#        self.handle_create()
+    def __init__(self, genders_file=None, no_auto=False):
 
-#        if self.load_data(genders_file) != 0:
-#            raise Exception(self.errormsg())
+        if not no_auto:
+            self.handle_create()
+            self.load_data(genders_file)
 
     def handle_create(self):
         self._handle = c_void_p(libgenders.genders_handle_create())

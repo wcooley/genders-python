@@ -12,7 +12,7 @@ import genders
 class TestGendersCore(unittest.TestCase):
 
     def setUp(self):
-        self.genders = genders.Genders()
+        self.genders = genders.Genders(no_auto=True)
 
     def test_handle_create(self):
         self.assertEqual(self.genders.handle_create(), None)
@@ -24,7 +24,7 @@ class TestGendersCore(unittest.TestCase):
 class TestGendersLoad(unittest.TestCase):
 
     def setUp(self):
-        self.genders = genders.Genders()
+        self.genders = genders.Genders(no_auto=True)
         self.genders.handle_create()
 
     def test_load_data(self):
@@ -37,7 +37,7 @@ class TestGendersLoad(unittest.TestCase):
 class TestGendersPredicates(unittest.TestCase):
 
     def setUp(self):
-        self.genders = genders.Genders()
+        self.genders = genders.Genders(no_auto=True)
         self.genders.handle_create()
         self.genders.load_data("test-data/genders")
 
