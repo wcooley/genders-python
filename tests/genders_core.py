@@ -58,21 +58,36 @@ class TestGendersPredicates(unittest.TestCase):
         self.assertFalse(self.genders.isattrval("Xos", "rhel5"))
         self.assertFalse(self.genders.isattrval("os", "Xrhel5"))
 
-#class TestGendersGetNums(unittest.TestCase):
-#
-#    def setUp(self):
-#        self.genders = genders.Genders()
-#        self.genders.handle_create()
-#        self.genders.load_data("test-data/genders")
-#
-#    def test_getnumnodes(self):
-#        self.assertEqual(self.genders.getnumnodes(), 1)
+class TestGendersGetNums(unittest.TestCase):
+
+    def setUp(self):
+        self.genders = genders.Genders("test-data/genders")
+
+    def test_getnumnodes(self):
+        self.assertEqual(self.genders.getnumnodes(), 1)
+
+    def test_getnumattrs(self):
+        self.assertEqual(self.genders.getnumattrs(), 2)
+
+    def test_getmaxattrs(self):
+        self.assertEqual(self.genders.getmaxattrs(), 2)
+
+# FIXME genders_getmaxnodelen seems to return 13???
+#    def test_getmaxnodelen(self):
+#        self.assertEqual(self.genders.getmaxnodelen(), 5)
+
+    def test_getmaxattrlen(self):
+        self.assertEqual(self.genders.getmaxattrlen(), 8)
+
+    def test_getmaxvallen(self):
+        self.assertEqual(self.genders.getmaxvallen(), 5)
 
 if __name__ == '__main__':
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(TestGendersCore)
     suite.addTest(loader.loadTestsFromTestCase(TestGendersLoad))
     suite.addTest(loader.loadTestsFromTestCase(TestGendersPredicates))
+    suite.addTest(loader.loadTestsFromTestCase(TestGendersGetNums))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
 

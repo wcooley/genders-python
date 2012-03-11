@@ -86,6 +86,24 @@ class Genders(object):
         val = c_char_p(val)
         return bool(libgenders.genders_isattrval(self._handle, attr, val))
 
+    def getnumnodes(self):
+        return libgenders.genders_getnumnodes(self._handle)
+
+    def getnumattrs(self):
+        return libgenders.genders_getnumattrs(self._handle)
+
+    def getmaxattrs(self):
+        return libgenders.genders_getmaxattrs(self._handle)
+
+    def getmaxnodelen(self):
+        return libgenders.genders_getmaxnodelen(self._handle)
+
+    def getmaxattrlen(self):
+        return libgenders.genders_getmaxattrlen(self._handle)
+
+    def getmaxvallen(self):
+        return libgenders.genders_getmaxvallen(self._handle)
+
     def errnum(self):
         return libgenders.genders_errnum(self._handle)
 
