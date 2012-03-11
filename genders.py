@@ -5,6 +5,53 @@ from ctypes import *
 
 libgenders = CDLL("libgenders.so")
 
+errnum_exceptions = [None]
+
+class ErrNullHandle(Exception): pass
+errnum_exceptions.append(ErrNullHandle)
+
+class ErrOpen(Exception): pass
+errnum_exceptions.append(ErrOpen)
+
+class ErrRead(Exception): pass
+errnum_exceptions.append(ErrRead)
+
+class ErrParse(Exception): pass
+errnum_exceptions.append(ErrParse)
+
+class ErrNotLoaded(Exception): pass
+errnum_exceptions.append(ErrNotLoaded)
+
+class ErrIsLoaded(Exception): pass
+errnum_exceptions.append(ErrIsLoaded)
+
+class ErrOverflow(Exception): pass
+errnum_exceptions.append(ErrOverflow)
+
+class ErrParameters(Exception): pass
+errnum_exceptions.append(ErrParameters)
+
+class ErrNullPtr(Exception): pass
+errnum_exceptions.append(ErrNullPtr)
+
+class ErrNotFound(Exception): pass
+errnum_exceptions.append(ErrNotFound)
+
+class ErrOutMem(Exception): pass
+errnum_exceptions.append(ErrOutMem)
+
+class ErrSyntax(Exception): pass
+errnum_exceptions.append(ErrSyntax)
+
+class ErrMagic(Exception): pass
+errnum_exceptions.append(ErrMagic)
+
+class ErrInternal(Exception): pass
+errnum_exceptions.append(ErrInternal)
+
+class ErrNumrange(Exception): pass
+errnum_exceptions.append(ErrNumrange)
+
 class Genders(object):
     def __init__(self, genders_file=None):
         pass
@@ -21,11 +68,11 @@ class Genders(object):
 
     def handle_destroy(self):
         if libgenders.genders_handle_destroy(self._handle) != 0:
-            raise Exception(self.errormsg())
+            raise errnum_exceptions[self.errnum()]()
 
     def load_data(self, genders_file=None):
         if libgenders.genders_load_data(self._handle, c_char_p(genders_file)) != 0:
-            raise Exception(self.errormsg())
+            raise errnum_exceptions[self.errnum()]()
 
     def isnode(self, node=None):
         node = c_char_p(node)
