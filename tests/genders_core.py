@@ -82,14 +82,26 @@ class TestGendersGetNums(unittest.TestCase):
     def test_getmaxvallen(self):
         self.assertEqual(self.genders.getmaxvallen(), 5)
 
+class TestGendersQuery(unittest.TestCase):
+
+    def setUp(self):
+        self.genders = genders.Genders("test-data/genders")
+
+    def test_query(self):
+        results = self.genders.query("os=rhel5")
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], "host1")
+
 if __name__ == '__main__':
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
     load_tests = loader.loadTestsFromTestCase
+
     suite.addTest(load_tests(TestGendersCore))
     suite.addTest(load_tests(TestGendersLoad))
     suite.addTest(load_tests(TestGendersPredicates))
     suite.addTest(load_tests(TestGendersGetNums))
+    suite.addTest(load_tests(TestGendersQuery))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
 
