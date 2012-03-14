@@ -119,19 +119,30 @@ class Genders(object):
         libgenders.genders_perror(self._handle, msg)
 
     def nodelist_create(self):
-        self.node_list = POINTER(POINTER(POINTER(c_char)))
-        #libgenders.genders_nodelist_create.
+        self.node_list = pointer(pointer(pointer(c_char_p(1))))
+        libgenders.genders_nodelist_create.argtypes = [c_void_p, POINTER(POINTER(POINTER(c_char_p)))]
         libgenders.genders_nodelist_create(self._handle, self.node_list)
+        return self.node_list
 
     def query(self, query_str):
-        query_str = c_char_p(query_str)
+        charptr = POINTER(c_char)
 
-        #nodes = byref(c_char_p * 500)
-        #nodes = pointer(c_char_p * 500)
-        #nodes = POINTER(c_char_p * 500)
-        node_buf = (c_char_p * 500)()
-        libgenders.genders_query.argtypes = [c_int, POINTER(c_char_p), c_int, c_char_p]
-        query_ret = libgenders.genders_query(self._handle, cast(node_buf, POINTER(c_char_p)), 500, query_str)
-        print "ret:", query_ret
+        node_buf = (charptr * 500)()
+        node_buf_ptr = pointer(node_buf)
+        node_buf[0] = create_string_buffer(10)
+        node_buf[1] = create_string_buffer(10)
+        libgenders.genders_query.restype = c_int
+        query_ret = libgenders.genders_query(self._handle, node_buf, 500, query_str)
+        #print "ret:", query_ret
 
-        return node_buf
+        if query_ret < 0:
+            raise errnum_exceptions[self.errnum()]()
+
+        node_list = []
+
+        for node in node_buf:
+            if node.contents.value == '\x00': break
+            node = cast(node, c_char_p)
+            node_list.append(node.value)
+
+        return node_list
