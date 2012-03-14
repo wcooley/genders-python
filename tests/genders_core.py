@@ -83,11 +83,13 @@ class TestGendersGetNums(unittest.TestCase):
         self.assertEqual(self.genders.getmaxvallen(), 5)
 
 if __name__ == '__main__':
+    suite = unittest.TestSuite()
     loader = unittest.TestLoader()
-    suite = loader.loadTestsFromTestCase(TestGendersCore)
-    suite.addTest(loader.loadTestsFromTestCase(TestGendersLoad))
-    suite.addTest(loader.loadTestsFromTestCase(TestGendersPredicates))
-    suite.addTest(loader.loadTestsFromTestCase(TestGendersGetNums))
+    load_tests = loader.loadTestsFromTestCase
+    suite.addTest(load_tests(TestGendersCore))
+    suite.addTest(load_tests(TestGendersLoad))
+    suite.addTest(load_tests(TestGendersPredicates))
+    suite.addTest(load_tests(TestGendersGetNums))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
 
