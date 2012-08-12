@@ -108,14 +108,17 @@ class Genders(object):
         if libgenders.genders_load_data(self._handle, genders_file) != 0:
             raise errnum_exceptions[self.errnum()]()
 
-    def isnode(self, node=None):
-        return libgenders.genders_isnode(self._handle, node)
+    def errnum(self):
+        return libgenders.genders_errnum(self._handle)
 
-    def isattr(self, attr=None):
-        return libgenders.genders_isattr(self._handle, attr)
+    def strerror(self, err):
+        return libgenders.genders_strerror(err)
 
-    def isattrval(self, attr=None, val=None):
-        return libgenders.genders_isattrval(self._handle, attr, val)
+    def errormsg(self):
+        return libgenders.genders_errormsg(self._handle)
+
+    def perror(self, msg=None):
+        libgenders.genders_perror(self._handle, msg)
 
     def getnumnodes(self):
         return libgenders.genders_getnumnodes(self._handle)
@@ -135,6 +138,25 @@ class Genders(object):
     def getmaxvallen(self):
         return libgenders.genders_getmaxvallen(self._handle)
 
+    def nodelist_create(self):
+        self.node_list = pointer(c_char_p(1))
+        libgenders.genders_nodelist_create(self._handle, byref(self.node_list))
+
+        return self.node_list
+
+    # def nodelist_clear
+    # def nodelist_destroy
+
+    # def attrlist_create
+    # def attrlist_clear
+    # def attrlist_destroy
+
+    # def vallist_create
+    # def vallist_clear
+    # def vallist_destroy
+
+    # def getnodename
+
     def getnodes(self, attr=None, val=None):
         node_buf = self.nodelist_create()
         ret = libgenders.genders_getnodes(self._handle, node_buf, self.getnumnodes(), attr, val)
@@ -144,23 +166,21 @@ class Genders(object):
 
         return _nodelist_to_list(node_buf, ret)
 
-    def errnum(self):
-        return libgenders.genders_errnum(self._handle)
+    # def getattr
+    # def getattr_all
+    # def testattr
+    # def testattrval
 
-    def strerror(self, err):
-        return libgenders.genders_strerror(err)
+    def isnode(self, node=None):
+        return libgenders.genders_isnode(self._handle, node)
 
-    def errormsg(self):
-        return libgenders.genders_errormsg(self._handle)
+    def isattr(self, attr=None):
+        return libgenders.genders_isattr(self._handle, attr)
 
-    def perror(self, msg=None):
-        libgenders.genders_perror(self._handle, msg)
+    def isattrval(self, attr=None, val=None):
+        return libgenders.genders_isattrval(self._handle, attr, val)
 
-    def nodelist_create(self):
-        self.node_list = pointer(c_char_p(1))
-        libgenders.genders_nodelist_create(self._handle, byref(self.node_list))
-
-        return self.node_list
+    # def index_attrvals
 
     def query(self, query_str):
         node_buf = self.nodelist_create()
@@ -170,5 +190,8 @@ class Genders(object):
             raise errnum_exceptions[self.errnum()]()
 
         return _nodelist_to_list(node_buf, query_ret)
+
+    # def testquery
+    # def parse
 
 # vim:fdm=marker
