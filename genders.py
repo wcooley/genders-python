@@ -82,11 +82,6 @@ errnum_exceptions.append(ErrNumrange)
 
 # }}} End Exceptions
 
-def _nodelist_to_list(node_list, length):
-    """ Converts a Genders node_list to a native Python list """
-    # FIXME Is there a way to do this with ctypes directly?
-    return [ node_list[i] for i in xrange(length) ]
-
 class Genders(object):
     def __init__(self, genders_file=None, no_auto=False):
 
@@ -164,7 +159,7 @@ class Genders(object):
         if ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        return _nodelist_to_list(node_buf, ret)
+        return node_buf[0:ret]
 
     # def getattr
     # def getattr_all
@@ -189,7 +184,7 @@ class Genders(object):
         if query_ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        return _nodelist_to_list(node_buf, query_ret)
+        return node_buf[0:query_ret]
 
     # def testquery
     # def parse
