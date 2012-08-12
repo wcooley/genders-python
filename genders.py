@@ -75,6 +75,13 @@ libgenders.genders_query.errcheck = errcheck
 libgenders.genders_testquery.errcheck = errcheck
 libgenders.genders_parse.errcheck = errcheck
 
+def errcheck_null(result, func, args):
+    if not result:
+        raise Exception("Error allocating memory in " + func.__name__ )
+    return args
+
+libgenders.genders_handle_create.errcheck = errcheck_null
+
 # }}} errcheck
 
 # Exceptions {{{
@@ -138,8 +145,6 @@ class Genders(object):
     def handle_create(self):
         self._handle = libgenders.genders_handle_create()
 
-        if not self._handle:
-            raise Exception("Error allocating memory")
 
     def handle_destroy(self):
         libgenders.genders_handle_destroy(self._handle)
