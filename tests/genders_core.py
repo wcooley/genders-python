@@ -166,17 +166,12 @@ class TestGendersLists(unittest.TestCase):
         self.assertEqual(nl[0], '')
 
 if __name__ == '__main__':
+    import __main__
+
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
-    load_tests = loader.loadTestsFromTestCase
 
-    suite.addTest(load_tests(TestGendersCore))
-    suite.addTest(load_tests(TestGendersLoad))
-    suite.addTest(load_tests(TestGendersPredicates))
-    suite.addTest(load_tests(TestGendersGetNums))
-    suite.addTest(load_tests(TestGendersGetNodes))
-    suite.addTest(load_tests(TestGendersLists))
-    suite.addTest(load_tests(TestGendersQuery))
+    suite.addTest(loader.loadTestsFromModule(__main__))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
 
