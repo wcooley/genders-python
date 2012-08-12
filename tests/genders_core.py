@@ -39,17 +39,32 @@ class TestGendersPredicates(unittest.TestCase):
     def setUp(self):
         self.genders = genders.Genders("test-data/genders")
 
+    # isnode
+    def test_isnode_bool(self):
+        self.assertEqual(type(self.genders.isnode('host1')), bool)
+        self.assertEqual(type(self.genders.isnode('Xhost1')), bool)
+
     def test_isnode_true(self):
         self.assertTrue(self.genders.isnode("host1"))
 
     def test_isnode_false(self):
         self.assertFalse(self.genders.isnode("Xhost1"))
 
+    # isattr
+    def test_isattr_bool(self):
+        self.assertEqual(type(self.genders.isattr('testhost')), bool)
+        self.assertEqual(type(self.genders.isattr('testhostX')), bool)
+
     def test_isattr_true(self):
         self.assertTrue(self.genders.isattr("testhost"))
 
     def test_isattr_false(self):
         self.assertFalse(self.genders.isattr("Xtesthost"))
+
+    # isattrval
+    def test_isattrval_bool(self):
+        self.assertEqual(type(self.genders.isattrval('os', 'rhel5')), bool)
+        self.assertEqual(type(self.genders.isattrval('Xos', 'rhel5')), bool)
 
     def test_isattrval_true(self):
         self.assertTrue(self.genders.isattrval("os", "rhel5"))

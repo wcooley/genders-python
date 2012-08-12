@@ -14,6 +14,24 @@ if not genders_library_file:
 
 libgenders = CDLL(genders_library_file)
 
+# Argument types
+libgenders.genders_load_data.argtypes = [c_void_p, c_char_p]
+libgenders.genders_isnode.argtypes = [c_void_p, c_char_p]
+libgenders.genders_isattr.argtypes = [c_void_p, c_char_p]
+libgenders.genders_isattrval.argtypes = [c_void_p, c_char_p]
+
+# Non-int return types
+libgenders.genders_handle_create.restype = c_void_p
+libgenders.genders_strerror.restype = c_char_p
+libgenders.genders_errormsg.restype = c_char_p
+
+libgenders.genders_isattr.restype = c_bool
+libgenders.genders_isnode.restype = c_bool
+libgenders.genders_isattrval.restype = c_bool
+
+libgenders.genders_perror.restype = None
+
+# Exceptions {{{
 errnum_exceptions = [None]
 
 # These are ordered so that each index corresponds with the errnum
@@ -62,6 +80,8 @@ errnum_exceptions.append(ErrInternal)
 class ErrNumrange(Exception): pass
 errnum_exceptions.append(ErrNumrange)
 
+# }}} End Exceptions
+
 def _nodelist_to_list(node_list, length):
     """ Converts a Genders node_list to a native Python list """
     # FIXME Is there a way to do this with ctypes directly?
@@ -75,7 +95,7 @@ class Genders(object):
             self.load_data(genders_file)
 
     def handle_create(self):
-        self._handle = c_void_p(libgenders.genders_handle_create())
+        self._handle = libgenders.genders_handle_create()
 
         if not self._handle:
             raise Exception("Error allocating memory")
@@ -85,21 +105,17 @@ class Genders(object):
             raise errnum_exceptions[self.errnum()]()
 
     def load_data(self, genders_file=None):
-        if libgenders.genders_load_data(self._handle, c_char_p(genders_file)) != 0:
+        if libgenders.genders_load_data(self._handle, genders_file) != 0:
             raise errnum_exceptions[self.errnum()]()
 
     def isnode(self, node=None):
-        node = c_char_p(node)
-        return bool(libgenders.genders_isnode(self._handle, node))
+        return libgenders.genders_isnode(self._handle, node)
 
     def isattr(self, attr=None):
-        attr = c_char_p(attr)
-        return bool(libgenders.genders_isattr(self._handle, attr))
+        return libgenders.genders_isattr(self._handle, attr)
 
     def isattrval(self, attr=None, val=None):
-        attr = c_char_p(attr)
-        val = c_char_p(val)
-        return bool(libgenders.genders_isattrval(self._handle, attr, val))
+        return libgenders.genders_isattrval(self._handle, attr, val)
 
     def getnumnodes(self):
         return libgenders.genders_getnumnodes(self._handle)
@@ -123,11 +139,9 @@ class Genders(object):
         return libgenders.genders_errnum(self._handle)
 
     def strerror(self, err):
-        libgenders.genders_strerror.restype = c_char_p
         return libgenders.genders_strerror(err)
 
     def errormsg(self):
-        libgenders.genders_errormsg.restype = c_char_p
         return libgenders.genders_errormsg(self._handle)
 
     def perror(self, msg=None):
@@ -148,3 +162,4 @@ class Genders(object):
 
         return _nodelist_to_list(node_buf, query_ret)
 
+# vim:fdm=marker
