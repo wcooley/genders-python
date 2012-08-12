@@ -1,11 +1,13 @@
 #!/usr/bin/env python26
 
+import sys
+if sys.version_info[0] < 3 and sys.version_info[1] < 5:
+    raise NotImplementedError, 'This module requires Python 2.5 or later'
+
 import ctypes
 from ctypes import CDLL, c_char_p, pointer, byref
 from ctypes.util import find_library
 from ctypes import *
-
-import sys
 
 genders_library_file = find_library('genders')
 
