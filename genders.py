@@ -1,5 +1,12 @@
 #!/usr/bin/env python26
 
+""" ctypes-based interface to the Genders library """
+
+__author__ = 'Wil Cooley'
+__email__ = 'wcooley@nakedape.cc'
+__license__ = 'GPL2'
+__version__ = '0.5.0'
+
 import sys
 if sys.version_info[0] < 3 and sys.version_info[1] < 5:
     raise NotImplementedError, 'This module requires Python 2.5 or later'
