@@ -182,10 +182,13 @@ class Genders(object):
     def getmaxvallen(self):
         return libgenders.genders_getmaxvallen(self._handle)
 
+    def _list_create(self, create_func):
+        clist = pointer(c_char_p(0))
+        create_func(self._handle, byref(clist))
+        return clist
+
     def nodelist_create(self):
-        node_list = pointer(c_char_p(0))
-        libgenders.genders_nodelist_create(self._handle, byref(node_list))
-        return node_list
+        return self._list_create(libgenders.genders_nodelist_create)
 
     def nodelist_clear(self, node_list):
         libgenders.genders_nodelist_clear(self._handle, node_list)
@@ -193,15 +196,29 @@ class Genders(object):
     def nodelist_destroy(self, node_list):
         libgenders.genders_nodelist_destroy(self._handle, node_list)
 
-    # def attrlist_create
-    # def attrlist_clear
-    # def attrlist_destroy
+    def attrlist_create(self):
+        return self._list_create(libgenders.genders_attrlist_create)
 
-    # def vallist_create
-    # def vallist_clear
-    # def vallist_destroy
+    def attrlist_clear(self, attr_list):
+        libgenders.genders_attrlist_clear(self._handle, attr_list)
 
-    # def getnodename
+    def attrlist_destroy(self, attr_list):
+         libgenders.genders_attrlist_destroy(self._handle, attr_list)
+
+    def vallist_create(self):
+        return self._list_create(libgenders.genders_vallist_create)
+
+    def vallist_clear(self, val_list):
+        libgenders.genders_vallist_clear(self._handle, val_list)
+
+    def vallist_destroy(self, val_list):
+        libgenders.genders_vallist_destroy(self._handle, val_list)
+
+    def getnodename(self):
+        bufsz = self.getmaxnodelen()+1
+        node = c_char_p(bufsz)
+        libgenders.genders_getnodename(self._handle, node, bufsz)
+        return node
 
     def getnodes(self, attr=None, val=None, node_list=None):
         if not node_list:
