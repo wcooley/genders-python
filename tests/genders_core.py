@@ -152,6 +152,19 @@ class TestGendersLists(unittest.TestCase):
         r = self.genders.nodelist_create()
         self.assertNotEqual(r, 0)
 
+    def test_nodelist_destroy(self):
+        nl = self.genders.nodelist_create()
+        self.genders.nodelist_destroy(nl)
+
+    def test_nodelist_clear(self):
+        nl = self.genders.nodelist_create()
+        nodes = self.genders.getnodes('os', 'rhel5', nl)
+        nodeslen = len(nodes)
+        self.assertEqual(nodes, nl[0:nodeslen])
+        self.genders.nodelist_clear(nl)
+        # FIXME Is this really a good test?
+        self.assertEqual(nl[0], '')
+
 if __name__ == '__main__':
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()

@@ -159,7 +159,11 @@ class Genders(object):
         libgenders.genders_nodelist_create(self._handle, byref(node_list))
         return node_list
 
-    # def nodelist_clear
+    def nodelist_clear(self, node_list):
+        r = libgenders.genders_nodelist_clear(self._handle, node_list)
+        if r < 0:
+            raise errnum_exceptions[self.errnum()]
+
     def nodelist_destroy(self, node_list):
         r = libgenders.genders_nodelist_destroy(self._handle, node_list)
         if r < 0:
@@ -175,15 +179,21 @@ class Genders(object):
 
     # def getnodename
 
-    def getnodes(self, attr=None, val=None):
-        node_list = self.nodelist_create()
+    def getnodes(self, attr=None, val=None, node_list=None):
+        if not node_list:
+            node_list = self.nodelist_create()
+            node_list_destroy = True
+        else:
+            node_list_destroy = False
+
         ret = libgenders.genders_getnodes(self._handle, node_list, self.getnumnodes(), attr, val)
 
         if ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
         pylist = node_list[0:ret]
-        self.nodelist_destroy(node_list)
+        if node_list_destroy:
+            self.nodelist_destroy(node_list)
         return pylist
 
     # def getattr
