@@ -135,6 +135,15 @@ class Genders(object):
     def getmaxvallen(self):
         return libgenders.genders_getmaxvallen(self._handle)
 
+    def getnodes(self, attr=None, val=None):
+        node_buf = self.nodelist_create()
+        ret = libgenders.genders_getnodes(self._handle, node_buf, self.getnumnodes(), attr, val)
+
+        if ret < 0:
+            raise errnum_exceptions[self.errnum()]()
+
+        return _nodelist_to_list(node_buf, ret)
+
     def errnum(self):
         return libgenders.genders_errnum(self._handle)
 

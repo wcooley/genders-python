@@ -114,6 +114,26 @@ class TestGendersQuery(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results, ['host2'])
 
+class TestGendersGetNodes(unittest.TestCase):
+
+    def setUp(self):
+        self.genders = genders.Genders("test-data/genders")
+
+    def test_getnodes_all(self):
+        results = self.genders.getnodes()
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, ['host1', 'host2'])
+
+    def test_getnodes_attr(self):
+        results = self.genders.getnodes('os')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, ['host1', 'host2'])
+
+    def test_getnodes_attrval(self):
+        results = self.genders.getnodes('os', 'rhel5')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, ['host1', 'host2'])
+
 class TestGendersLists(unittest.TestCase):
 
     def setUp(self):
@@ -132,6 +152,7 @@ if __name__ == '__main__':
     suite.addTest(load_tests(TestGendersLoad))
     suite.addTest(load_tests(TestGendersPredicates))
     suite.addTest(load_tests(TestGendersGetNums))
+    suite.addTest(load_tests(TestGendersGetNodes))
     suite.addTest(load_tests(TestGendersLists))
     suite.addTest(load_tests(TestGendersQuery))
 
