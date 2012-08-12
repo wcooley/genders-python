@@ -16,6 +16,7 @@ libgenders = CDLL(genders_library_file)
 
 errnum_exceptions = [None]
 
+# These are ordered so that each index corresponds with the errnum
 class ErrNullHandle(Exception): pass
 errnum_exceptions.append(ErrNullHandle)
 
