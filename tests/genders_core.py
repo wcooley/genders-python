@@ -30,9 +30,18 @@ class TestGendersLoad(unittest.TestCase):
     def test_load_data(self):
         self.assertEqual(self.genders.load_data("test-data/genders"), None)
 
-    def test_load_data_fail(self):
+    def test_load_data_err_parse(self):
         self.assertRaises(genders.ErrParse, self.genders.load_data,
                 "test-data/genders.dup-attr")
+
+    def test_load_data_err_open(self):
+        self.assertRaises(genders.ErrOpen, self.genders.load_data,
+                'test-data/does-not-exist')
+
+    def test_load_data_err_isloaded(self):
+        self.assertEqual(self.genders.load_data('test-data/genders'), None)
+        self.assertRaises(genders.ErrIsLoaded, self.genders.load_data,
+                'test-data/genders')
 
 class TestGendersPredicates(unittest.TestCase):
 

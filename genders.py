@@ -31,6 +31,15 @@ libgenders.genders_isattrval.restype = c_bool
 
 libgenders.genders_perror.restype = None
 
+def errcheck(result, func, args):
+    handle, rargs = args[0], args[1:]
+    if result < 0:
+        raise errnum_exceptions[libgenders.genders_errnum(handle)]()
+    return args
+
+libgenders.genders_load_data.errcheck = errcheck
+
+
 # Exceptions {{{
 errnum_exceptions = [None]
 
@@ -100,8 +109,7 @@ class Genders(object):
             raise errnum_exceptions[self.errnum()]()
 
     def load_data(self, genders_file=None):
-        if libgenders.genders_load_data(self._handle, genders_file) != 0:
-            raise errnum_exceptions[self.errnum()]()
+        libgenders.genders_load_data(self._handle, genders_file)
 
     def errnum(self):
         return libgenders.genders_errnum(self._handle)
