@@ -64,10 +64,10 @@ class TestGendersGetNums(unittest.TestCase):
         self.genders = genders.Genders("test-data/genders")
 
     def test_getnumnodes(self):
-        self.assertEqual(self.genders.getnumnodes(), 1)
+        self.assertEqual(self.genders.getnumnodes(), 2)
 
     def test_getnumattrs(self):
-        self.assertEqual(self.genders.getnumattrs(), 2)
+        self.assertEqual(self.genders.getnumattrs(), 3)
 
     def test_getmaxattrs(self):
         self.assertEqual(self.genders.getmaxattrs(), 2)
@@ -79,7 +79,7 @@ class TestGendersGetNums(unittest.TestCase):
         self.assertEqual(self.genders.getmaxnodelen(), 13)
 
     def test_getmaxattrlen(self):
-        self.assertEqual(self.genders.getmaxattrlen(), 8)
+        self.assertEqual(self.genders.getmaxattrlen(), 9)
 
     def test_getmaxvallen(self):
         self.assertEqual(self.genders.getmaxvallen(), 5)
@@ -91,8 +91,22 @@ class TestGendersQuery(unittest.TestCase):
 
     def test_query(self):
         results = self.genders.query("os=rhel5")
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, ['host1', 'host2'])
+
+    def test_query2(self):
+        results = self.genders.query('testhost2')
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], "host1")
+        self.assertEqual(results, ['host2'])
+
+class TestGendersLists(unittest.TestCase):
+
+    def setUp(self):
+        self.genders = genders.Genders("test-data/genders")
+
+    def test_nodelist_create(self):
+        r = self.genders.nodelist_create()
+        self.assertNotEqual(r, 0)
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
@@ -103,6 +117,7 @@ if __name__ == '__main__':
     suite.addTest(load_tests(TestGendersLoad))
     suite.addTest(load_tests(TestGendersPredicates))
     suite.addTest(load_tests(TestGendersGetNums))
+    suite.addTest(load_tests(TestGendersLists))
     suite.addTest(load_tests(TestGendersQuery))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -1,1 +1,2 @@
 host1   os=rhel5,testhost
+host2   os=rhel5,testhost2
