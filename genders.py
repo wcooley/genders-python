@@ -31,13 +31,26 @@ libgenders.genders_isattrval.restype = c_bool
 
 libgenders.genders_perror.restype = None
 
-def errcheck(result, func, args):
-    handle, rargs = args[0], args[1:]
+def raise_exception(result, func, args):
+    handle = args[0]
+    errnum = libgenders.genders_errnum(handle)
+    errmsg = libgenders.genders_errormsg(handle)
+    errmsg += " from func " + func.__name__
+    raise errnum_exceptions[errnum](errmsg)
+
+def errcheck_ltz(result, func, args):
+    """ errcheck for functions that return less-than-zero on error """
     if result < 0:
-        raise errnum_exceptions[libgenders.genders_errnum(handle)]()
+        raise_exception(result, func, args)
     return args
 
-libgenders.genders_load_data.errcheck = errcheck
+def errcheck_null(result, func, args):
+    """ errcheck for functions that return NULL (None) on error """
+    if not result:
+        raise_exception(result, func, args)
+    return args
+
+libgenders.genders_load_data.errcheck = errcheck_ltz
 
 
 # Exceptions {{{
