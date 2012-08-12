@@ -139,7 +139,10 @@ class Genders(object):
         return node_list
 
     # def nodelist_clear
-    # def nodelist_destroy
+    def nodelist_destroy(self, node_list):
+        r = libgenders.genders_nodelist_destroy(self._handle, node_list)
+        if r < 0:
+            raise errnum_exceptions[self.errnum()]
 
     # def attrlist_create
     # def attrlist_clear
@@ -158,7 +161,9 @@ class Genders(object):
         if ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        return node_buf[0:ret]
+        pylist = node_buf[0:ret]
+        self.nodelist_destroy(node_buf)
+        return pylist
 
     # def getattr
     # def getattr_all
@@ -183,7 +188,9 @@ class Genders(object):
         if query_ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        return node_buf[0:query_ret]
+        pylist = node_buf[0:query_ret]
+        self.nodelist_destroy(node_buf)
+        return pylist
 
     # def testquery
     # def parse
