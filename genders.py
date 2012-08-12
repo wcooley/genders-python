@@ -155,14 +155,14 @@ class Genders(object):
     # def getnodename
 
     def getnodes(self, attr=None, val=None):
-        node_buf = self.nodelist_create()
-        ret = libgenders.genders_getnodes(self._handle, node_buf, self.getnumnodes(), attr, val)
+        node_list = self.nodelist_create()
+        ret = libgenders.genders_getnodes(self._handle, node_list, self.getnumnodes(), attr, val)
 
         if ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        pylist = node_buf[0:ret]
-        self.nodelist_destroy(node_buf)
+        pylist = node_list[0:ret]
+        self.nodelist_destroy(node_list)
         return pylist
 
     # def getattr
@@ -182,14 +182,14 @@ class Genders(object):
     # def index_attrvals
 
     def query(self, query_str):
-        node_buf = self.nodelist_create()
-        query_ret = libgenders.genders_query(self._handle, node_buf, self.getnumnodes(), query_str)
+        node_list = self.nodelist_create()
+        query_ret = libgenders.genders_query(self._handle, node_list, self.getnumnodes(), query_str)
 
         if query_ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
-        pylist = node_buf[0:query_ret]
-        self.nodelist_destroy(node_buf)
+        pylist = node_list[0:query_ret]
+        self.nodelist_destroy(node_list)
         return pylist
 
     # def testquery
