@@ -1,9 +1,18 @@
 #!/usr/bin/env python26
 
-#from ctypes import CDLL, c_char_p, pointer, byref
+import ctypes
+from ctypes import CDLL, c_char_p, pointer, byref
+from ctypes.util import find_library
 from ctypes import *
 
-libgenders = CDLL("libgenders.so")
+import sys
+
+genders_library_file = find_library('genders')
+
+if not genders_library_file:
+    raise NotImplementedError, 'Unable to find genders library'
+
+libgenders = CDLL(genders_library_file)
 
 errnum_exceptions = [None]
 
