@@ -31,27 +31,51 @@ libgenders.genders_isattrval.restype = c_bool
 
 libgenders.genders_perror.restype = None
 
-def raise_exception(result, func, args):
-    handle = args[0]
-    errnum = libgenders.genders_errnum(handle)
-    errmsg = libgenders.genders_errormsg(handle)
-    errmsg += " from func " + func.__name__
-    raise errnum_exceptions[errnum](errmsg)
-
-def errcheck_ltz(result, func, args):
+# ctypes errcheck {{{
+def errcheck(result, func, args):
     """ errcheck for functions that return less-than-zero on error """
     if result < 0:
-        raise_exception(result, func, args)
+        handle = args[0]
+        errnum = libgenders.genders_errnum(handle)
+        errmsg = libgenders.genders_errormsg(handle)
+        errmsg += " from func " + func.__name__
+        raise errnum_exceptions[errnum](errmsg)
     return args
 
-def errcheck_null(result, func, args):
-    """ errcheck for functions that return NULL (None) on error """
-    if not result:
-        raise_exception(result, func, args)
-    return args
+# Circular dependency: We need a handle to process the error, so we deal with
+# handle_create where we use it. Likewise for errnum, strerror, errmsg, perror.
+libgenders.genders_handle_destroy.errcheck = errcheck
+libgenders.genders_load_data.errcheck = errcheck
+libgenders.genders_getnumnodes.errcheck = errcheck
+libgenders.genders_getnumattrs.errcheck = errcheck
+libgenders.genders_getmaxattrs.errcheck = errcheck
+libgenders.genders_getmaxnodelen.errcheck = errcheck
+libgenders.genders_getmaxattrlen.errcheck = errcheck
+libgenders.genders_getmaxvallen.errcheck = errcheck
+libgenders.genders_nodelist_create.errcheck = errcheck
+libgenders.genders_nodelist_clear.errcheck = errcheck
+libgenders.genders_nodelist_destroy.errcheck = errcheck
+libgenders.genders_attrlist_create.errcheck = errcheck
+libgenders.genders_attrlist_clear.errcheck = errcheck
+libgenders.genders_attrlist_destroy.errcheck = errcheck
+libgenders.genders_vallist_create.errcheck = errcheck
+libgenders.genders_vallist_clear.errcheck = errcheck
+libgenders.genders_vallist_destroy.errcheck = errcheck
+libgenders.genders_getnodename.errcheck = errcheck
+libgenders.genders_getnodes.errcheck = errcheck
+libgenders.genders_getattr.errcheck = errcheck
+libgenders.genders_getattr_all.errcheck = errcheck
+libgenders.genders_testattr.errcheck = errcheck
+libgenders.genders_testattrval.errcheck = errcheck
+libgenders.genders_isnode.errcheck = errcheck
+libgenders.genders_isattr.errcheck = errcheck
+libgenders.genders_isattrval.errcheck = errcheck
+libgenders.genders_index_attrvals.errcheck = errcheck
+libgenders.genders_query.errcheck = errcheck
+libgenders.genders_testquery.errcheck = errcheck
+libgenders.genders_parse.errcheck = errcheck
 
-libgenders.genders_load_data.errcheck = errcheck_ltz
-
+# }}} errcheck
 
 # Exceptions {{{
 errnum_exceptions = [None]
@@ -118,8 +142,7 @@ class Genders(object):
             raise Exception("Error allocating memory")
 
     def handle_destroy(self):
-        if libgenders.genders_handle_destroy(self._handle) != 0:
-            raise errnum_exceptions[self.errnum()]()
+        libgenders.genders_handle_destroy(self._handle)
 
     def load_data(self, genders_file=None):
         libgenders.genders_load_data(self._handle, genders_file)
@@ -160,14 +183,10 @@ class Genders(object):
         return node_list
 
     def nodelist_clear(self, node_list):
-        r = libgenders.genders_nodelist_clear(self._handle, node_list)
-        if r < 0:
-            raise errnum_exceptions[self.errnum()]
+        libgenders.genders_nodelist_clear(self._handle, node_list)
 
     def nodelist_destroy(self, node_list):
-        r = libgenders.genders_nodelist_destroy(self._handle, node_list)
-        if r < 0:
-            raise errnum_exceptions[self.errnum()]
+        libgenders.genders_nodelist_destroy(self._handle, node_list)
 
     # def attrlist_create
     # def attrlist_clear
@@ -215,9 +234,6 @@ class Genders(object):
     def query(self, query_str):
         node_list = self.nodelist_create()
         query_ret = libgenders.genders_query(self._handle, node_list, self.getnumnodes(), query_str)
-
-        if query_ret < 0:
-            raise errnum_exceptions[self.errnum()]()
 
         pylist = node_list[0:query_ret]
         self.nodelist_destroy(node_list)
