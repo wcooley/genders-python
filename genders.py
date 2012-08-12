@@ -134,10 +134,9 @@ class Genders(object):
         return libgenders.genders_getmaxvallen(self._handle)
 
     def nodelist_create(self):
-        self.node_list = pointer(c_char_p(1))
-        libgenders.genders_nodelist_create(self._handle, byref(self.node_list))
-
-        return self.node_list
+        node_list = pointer(c_char_p(1))
+        libgenders.genders_nodelist_create(self._handle, byref(node_list))
+        return node_list
 
     # def nodelist_clear
     # def nodelist_destroy
