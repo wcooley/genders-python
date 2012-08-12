@@ -128,30 +128,21 @@ class Genders(object):
         libgenders.genders_perror(self._handle, msg)
 
     def nodelist_create(self):
-        self.node_list = pointer(pointer(pointer(c_char_p(1))))
-        libgenders.genders_nodelist_create.argtypes = [c_void_p, POINTER(POINTER(POINTER(c_char_p)))]
-        libgenders.genders_nodelist_create(self._handle, self.node_list)
+        self.node_list = pointer(c_char_p(1))
+        libgenders.genders_nodelist_create(self._handle, byref(self.node_list))
+
         return self.node_list
 
     def query(self, query_str):
-        charptr = POINTER(c_char)
-
-        node_buf = (charptr * 500)()
-        node_buf_ptr = pointer(node_buf)
-        node_buf[0] = create_string_buffer(10)
-        node_buf[1] = create_string_buffer(10)
-        libgenders.genders_query.restype = c_int
-        query_ret = libgenders.genders_query(self._handle, node_buf, 500, query_str)
-        #print "ret:", query_ret
+        node_buf = self.nodelist_create()
+        query_ret = libgenders.genders_query(self._handle, node_buf, self.getnumnodes(), query_str)
 
         if query_ret < 0:
             raise errnum_exceptions[self.errnum()]()
 
+        # FIXME Is there a way to do this with ctypes directly?
         node_list = []
-
-        for node in node_buf:
-            if node.contents.value == '\x00': break
-            node = cast(node, c_char_p)
-            node_list.append(node.value)
+        for i in xrange(query_ret):
+            node_list.append(node_buf[i])
 
         return node_list
