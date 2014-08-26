@@ -96,11 +96,8 @@ class TestGendersGetNums(unittest.TestCase):
     def test_getmaxattrs(self):
         self.assertEqual(self.genders.getmaxattrs(), 2)
 
-    # I have been unable to ascertain why or where, but getmaxnodelen seems to
-    # return 13 as a minimum. I experimentally confirmed that the C library
-    # does this itself and it is not some weird misunderstanding with ctypes.
     def test_getmaxnodelen(self):
-        self.assertEqual(self.genders.getmaxnodelen(), 13)
+        self.assertEqual(self.genders.getmaxnodelen(), 5)
 
     def test_getmaxattrlen(self):
         self.assertEqual(self.genders.getmaxattrlen(), 9)
